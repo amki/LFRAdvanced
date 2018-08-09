@@ -131,7 +131,8 @@ function LFRAdvanced_IsSpam(name, comment)
 	end
 end
 
-function LFRAdvanced_MatchSearchResult(pattern, activityID, name, comment, iLvl, leaderName)
+function LFRAdvanced_MatchSearchResult(pattern, resultID)
+    local id, activityID, name, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers = C_LFGList.GetSearchResultInfo(resultID);
 	--if iLvl > 0 and pattern:match("i%d+") then
 	--	local i = tonumber(pattern:sub(2));
 	--	return iLvl >= i;
@@ -144,6 +145,32 @@ function LFRAdvanced_MatchSearchResult(pattern, activityID, name, comment, iLvl,
 			end
 			pattern = pattern:gsub(m, '', 1);
 		end
+	end
+
+	for m in pattern:gmatch("no%a+") do
+		local mRole = m:sub(3):upper()
+		for i=1, numMembers do
+			local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(resultID, i);
+			if mRole == role then
+				return false;
+			end
+		end
+		pattern = pattern:gsub(m, '', 1);
+	end
+	
+ 	for m in pattern:gmatch("has%a+") do
+		local mRole = m:sub(4):upper()
+		local contained = false
+		for i=1, numMembers do
+			local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(resultID, i);
+			if mRole == role then
+				contained = true
+			end
+		end
+		if not contained then
+			return false;
+		end
+		pattern = pattern:gsub(m, '', 1);
 	end
 
 	local activityName = C_LFGList.GetActivityInfo(activityID);

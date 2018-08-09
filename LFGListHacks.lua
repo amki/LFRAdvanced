@@ -129,7 +129,7 @@ function MyLFGListSearchPanel_UpdateResultList(self)
 	for i=1, #self.results do
 		local id, activityID, name, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers = C_LFGList.GetSearchResultInfo(self.results[i]);
 		local isSpam = LFRAdvanced_IsSpam(name, comment);
-		if (searchText ~= "" and LFRAdvanced_MatchSearchResult(searchText, activityID, name, comment, iLvl, leaderName) and not isSpam) or (searchText == "" and not isSpam) then
+		if (searchText ~= "" and LFRAdvanced_MatchSearchResult(searchText, self.results[i]) and not isSpam) or (searchText == "" and not isSpam) then
 			numResults = numResults + 1;
 			newResults[numResults] = self.results[i];
 		end
